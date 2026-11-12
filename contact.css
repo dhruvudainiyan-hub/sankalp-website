@@ -1,0 +1,16 @@
+.contact-wrap{max-width:760px;margin:auto;padding:30px 16px 50px;display:grid;gap:24px}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info a,.info div{background:#fff;border-radius:14px;padding:16px 12px;text-align:center;box-shadow:0 8px 24px rgba(56,29,42,.1);border-bottom:4px solid var(--orange);color:var(--violet);font-size:13px}
+.info b{display:block;color:var(--blue);font-size:14px;margin-bottom:2px}
+.formbox{background:#fff;border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(56,29,42,.13);border-top:5px solid var(--orange);text-align:left}
+.formbox h2{color:var(--violet);font-size:24px;margin-bottom:4px}
+.formbox .sub{font-size:14px;color:#5a4a52;margin-bottom:18px}
+.formbox label{display:block;font-size:13px;font-weight:600;color:var(--violet);margin-bottom:5px}
+.formbox input,.formbox select,.formbox textarea{width:100%;padding:12px;margin-bottom:14px;border:1px solid var(--olive);border-radius:10px;font-family:inherit;font-size:16px;background:var(--light);color:#33232b}
+.formbox input:focus,.formbox select:focus,.formbox textarea:focus{outline:2px solid var(--orange);background:#fff}
+.formbox textarea{min-height:90px;resize:vertical}
+.formbox button.btn{width:100%;margin:0;border:none;cursor:pointer;font-size:16px;font-family:inherit}
+.hidden{display:none}
+.thanks{max-width:520px;margin:50px auto;padding:0 18px;text-align:center}
+.thanks h2{color:var(--violet);margin-bottom:10px}
+.thanks p{margin-bottom:20px}
