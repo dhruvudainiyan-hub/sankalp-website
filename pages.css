@@ -3,8 +3,8 @@
 .page-title h1{font-size:30px;margin-bottom:8px}
 .page-title h1 span{color:var(--orange)}
 .page-title p{color:var(--cream);max-width:480px;margin:auto}
-.jump{display:flex;gap:10px;overflow-x:auto;padding:14px 16px;background:var(--cream);justify-content:flex-start}
-.jump a{flex:0 0 auto;background:#fff;color:var(--violet);font-size:13px;font-weight:600;padding:8px 16px;border-radius:30px;border:1px solid var(--olive)}
+.jump{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:18px 16px;background:var(--cream);border-bottom:3px solid var(--olive)}
+.jump a{background:#fff;color:var(--violet);font-size:14px;font-weight:600;padding:9px 20px;border-radius:30px;border:1px solid var(--olive);box-shadow:0 3px 8px rgba(56,29,42,.1);transition:.2s}
 .jump a:hover{background:var(--orange)}
 .course-list{max-width:760px;margin:auto;padding:30px 16px 50px;display:grid;gap:24px}
 .course{background:#fff;border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(56,29,42,.13);border-top:5px solid var(--orange);scroll-margin-top:110px;text-align:left}
