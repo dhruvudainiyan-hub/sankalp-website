@@ -1,0 +1,9 @@
+.page-title{background:linear-gradient(135deg,#0B1F4B,#13306e);color:#fff;text-align:center;padding:40px 20px}
+.page-title h1{font-size:26px;margin-bottom:6px}
+.page-title p{color:var(--gold)}
+.course-list{max-width:700px;margin:auto;padding:30px 16px;display:grid;gap:18px}
+.course{background:#fff;border:1px solid #e3e7f0;border-left:5px solid var(--gold);border-radius:10px;padding:20px;box-shadow:0 2px 8px rgba(11,31,75,.08)}
+.course h3{color:var(--navy);margin-bottom:6px}
+.course ul{margin:10px 0 14px 20px}
+.course li{margin-bottom:4px}
+.course .btn{margin:0;padding:10px 20px;font-size:14px}
