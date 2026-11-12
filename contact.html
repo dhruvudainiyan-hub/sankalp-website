@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact and Admission Enquiry | Sankalp Coaching Classes, Agra</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="contact.css">
+</head>
+<body>
+
+<div class="ticker"><span>🎓 Admissions Open for the New Session &nbsp;•&nbsp; Classes 9th to 12th, JEE &amp; NEET &nbsp;•&nbsp; Call 1234567890 to book a free demo class</span></div>
+
+<header>
+  <div class="logo">SANKALP COACHING CLASSES</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="courses.html">Courses</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="page-title">
+  <small>ADMISSIONS OPEN</small>
+  <h1>Admission <span>Enquiry</span></h1>
+  <p>Fill the form and our team will call you back. You can also visit us for a free demo class.</p>
+</section>
+
+<section class="contact-wrap">
+
+  <div class="info">
+    <a href="tel:1234567890"><b>📞 Call Us</b>1234567890</a>
+    <a href="mailto:example@gmail.com"><b>✉️ Email</b>example@gmail.com</a>
+    <div style="grid-column:1/-1"><b>📍 Visit Us</b>Jangjeet Nagar, Agra</div>
+  </div>
+
+  <div class="formbox">
+    <h2>Enquire Now</h2>
+    <p class="sub">It takes less than a minute.</p>
+
+    <form name="enquiry" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="enquiry">
+      <p class="hidden"><label>Do not fill this: <input name="bot-field"></label></p>
+
+      <label for="student">Student Name</label>
+      <input id="student" type="text" name="student_name" required>
+
+      <label for="parent">Parent Name</label>
+      <input id="parent" type="text" name="parent_name" required>
+
+      <label for="phone">Phone Number</label>
+      <input id="phone" type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" required>
+
+      <label for="course">Course Interested In</label>
+      <select id="course" name="course" required>
+        <option value="">Select a course</option>
+        <option>Class 9th and 10th</option>
+        <option>Class 11th and 12th</option>
+        <option>JEE Main and Advanced</option>
+        <option>NEET</option>
+      </select>
+
+      <label for="msg">Message (optional)</label>
+      <textarea id="msg" name="message"></textarea>
+
+      <button class="btn" type="submit">Submit Enquiry</button>
+    </form>
+  </div>
+
+</section>
+
+<a class="float-call" href="tel:1234567890">📞 Call Now</a>
+
+<footer>
+  <b>Sankalp Coaching Classes</b><br>
+  Jangjeet Nagar, Agra<br>
+  Phone: 1234567890<br>
+  example@gmail.com
+</footer>
+
+</body>
+</html>
