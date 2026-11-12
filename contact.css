@@ -11,6 +11,6 @@
 .formbox textarea{min-height:90px;resize:vertical}
 .formbox button.btn{width:100%;margin:0;border:none;cursor:pointer;font-size:16px;font-family:inherit}
 .hidden{display:none}
-.thanks{max-width:520px;margin:50px auto;padding:0 18px;text-align:center}
+.thanks{max-width:520px;margin:0 auto;padding:40px 18px;text-align:center;min-height:calc(100vh - 340px);display:flex;flex-direction:column;justify-content:center;align-items:center}
 .thanks h2{color:var(--violet);margin-bottom:10px}
 .thanks p{margin-bottom:20px}
