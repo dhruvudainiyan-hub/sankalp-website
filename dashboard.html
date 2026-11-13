@@ -7,6 +7,11 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pages.css">
 <link rel="stylesheet" href="contact.css">
+<style>
+.mat{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--light);border:1px solid var(--olive);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.mat span{font-weight:600;color:var(--violet);font-size:14px}
+.mat button{background:var(--orange);color:var(--violet);border:none;border-radius:20px;padding:8px 16px;font-weight:600;font-family:inherit;cursor:pointer}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -36,7 +41,8 @@
 
   <div class="formbox">
     <h2>Study Materials</h2>
-    <p class="sub">Your batch PDFs will appear here soon.</p>
+    <p class="sub" id="matsub">Loading...</p>
+    <div id="matlist"></div>
     <button class="btn" id="logoutBtn" type="button">Log Out</button>
   </div>
 </section>
@@ -53,6 +59,34 @@ const sb = supabase.createClient(
   "sb_publishable_UOI3Z3wQCNLFaLh0BDJHSw_mOCbK3Kw"
 );
 
+async function openFile(path) {
+  const { data, error } = await sb.storage.from("materials").createSignedUrl(path, 120);
+  if (error || !data) { alert("Could not open this file. Please try again."); return; }
+  window.open(data.signedUrl, "_blank");
+}
+
+async function loadMaterials() {
+  const sub = document.getElementById("matsub");
+  const list = document.getElementById("matlist");
+  const { data, error } = await sb.from("materials").select("title,file_path").order("created_at", { ascending: false });
+  if (error) { sub.textContent = "Could not load study materials."; return; }
+  if (!data || data.length === 0) { sub.textContent = "No study materials have been added for your batch yet."; return; }
+  sub.textContent = "Tap Download to open a file.";
+  data.forEach(function (m) {
+    const row = document.createElement("div");
+    row.className = "mat";
+    const label = document.createElement("span");
+    label.textContent = m.title;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Download";
+    btn.addEventListener("click", function () { openFile(m.file_path); });
+    row.appendChild(label);
+    row.appendChild(btn);
+    list.appendChild(row);
+  });
+}
+
 async function load() {
   const { data } = await sb.auth.getSession();
   if (!data.session) { window.location.href = "login"; return; }
@@ -64,11 +98,13 @@ async function load() {
     document.getElementById("name").textContent = "Student";
     document.getElementById("batchline").textContent = "Your profile is not set up yet. Please contact the institute.";
     document.getElementById("batch").textContent = "Not assigned";
+    document.getElementById("matsub").textContent = "";
     return;
   }
   document.getElementById("name").textContent = res.data.full_name || "Student";
   document.getElementById("batch").textContent = res.data.batch || "Not assigned";
   document.getElementById("batchline").textContent = "Batch: " + (res.data.batch || "Not assigned");
+  loadMaterials();
 }
 
 document.getElementById("logoutBtn").addEventListener("click", async function () {
