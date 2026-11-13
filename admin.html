@@ -46,4 +46,181 @@
   <button data-t="stu">Students</button>
   <button data-t="mat">PDF Materials</button>
 </div>
-<div id="status">
+<div id="status"></div>
+
+<section class="panel on" id="enq"></section>
+
+<section class="panel" id="stu">
+  <p class="note">To add a new student, create the login in Supabase under Authentication, Users. The student appears here, and you set the name and batch.</p>
+  <div id="stulist"></div>
+</section>
+
+<section class="panel" id="mat">
+  <div class="formbox">
+    <h2>Upload PDF</h2>
+    <p class="sub">Only students of the chosen batch can open it.</p>
+    <label for="mbatch">Batch</label>
+    <select id="mbatch"></select>
+    <label for="mtitle">Title</label>
+    <input id="mtitle" type="text" placeholder="e.g. Maths Chapter 1 Notes">
+    <label for="mfile">PDF file</label>
+    <input id="mfile" type="file" accept="application/pdf">
+    <button class="btn" id="upBtn" type="button">Upload</button>
+  </div>
+  <h2 style="margin:26px 0 12px;color:var(--violet)">Uploaded Files</h2>
+  <div id="matlist"></div>
+</section>
+
+<footer>
+  <b>Sankalp Coaching Classes</b><br>
+  Admin area
+</footer>
+
+<script>
+const sb = supabase.createClient(
+  "https://srgffmgmutwfvxeiwffl.supabase.co",
+  "sb_publishable_UOI3Z3wQCNLFaLh0BDJHSw_mOCbK3Kw"
+);
+const BATCHES = ["Class 9", "Class 10", "Class 11", "Class 12", "JEE", "NEET"];
+const statusEl = document.getElementById("status");
+
+function say(t) { statusEl.textContent = t || ""; }
+function el(tag, text, cls) {
+  const e = document.createElement(tag);
+  if (text !== undefined) e.textContent = text;
+  if (cls) e.className = cls;
+  return e;
+}
+function batchSelect(current, withBlank) {
+  const s = document.createElement("select");
+  if (withBlank) { const o = el("option", "Not assigned"); o.value = ""; s.appendChild(o); }
+  BATCHES.forEach(function (b) { const o = el("option", b); o.value = b; s.appendChild(o); });
+  s.value = current || "";
+  return s;
+}
+
+async function loadEnquiries() {
+  const box = document.getElementById("enq");
+  box.textContent = "";
+  const { data, error } = await sb.from("enquiries").select("*").order("created_at", { ascending: false });
+  if (error) { box.appendChild(el("p", "Could not load enquiries.")); return; }
+  if (!data.length) { box.appendChild(el("p", "No enquiries yet.")); return; }
+  data.forEach(function (q) {
+    const r = el("div", "", "rowc");
+    r.appendChild(el("b", q.student_name + " (Parent: " + q.parent_name + ")"));
+    const a = el("small", "");
+    const link = document.createElement("a");
+    link.href = "tel:" + q.phone;
+    link.textContent = q.phone;
+    a.appendChild(link);
+    a.appendChild(document.createTextNode("  |  " + q.course));
+    r.appendChild(a);
+    if (q.message) r.appendChild(el("small", "Message: " + q.message));
+    r.appendChild(el("small", new Date(q.created_at).toLocaleString()));
+    box.appendChild(r);
+  });
+}
+
+async function loadStudents() {
+  const box = document.getElementById("stulist");
+  box.textContent = "";
+  const { data, error } = await sb.from("profiles").select("id,full_name,batch,email,role").eq("role", "student").order("full_name");
+  if (error) { box.appendChild(el("p", "Could not load students.")); return; }
+  if (!data.length) { box.appendChild(el("p", "No students yet.")); return; }
+  data.forEach(function (s) {
+    const r = el("div", "", "rowc");
+    r.appendChild(el("b", s.email || "Student"));
+    const name = document.createElement("input");
+    name.value = s.full_name || "";
+    name.placeholder = "Student name";
+    const batch = batchSelect(s.batch, true);
+    const save = el("button", "Save", "sm");
+    save.type = "button";
+    save.addEventListener("click", async function () {
+      say("Saving...");
+      const res = await sb.from("profiles").update({ full_name: name.value.trim(), batch: batch.value || null }).eq("id", s.id);
+      say(res.error ? "Could not save. Try again." : "Saved.");
+    });
+    r.appendChild(name); r.appendChild(batch); r.appendChild(save);
+    box.appendChild(r);
+  });
+}
+
+async function loadMaterials() {
+  const box = document.getElementById("matlist");
+  box.textContent = "";
+  const { data, error } = await sb.from("materials").select("*").order("created_at", { ascending: false });
+  if (error) { box.appendChild(el("p", "Could not load files.")); return; }
+  if (!data.length) { box.appendChild(el("p", "No files uploaded yet.")); return; }
+  data.forEach(function (m) {
+    const r = el("div", "", "rowc");
+    r.appendChild(el("b", m.title));
+    r.appendChild(el("small", "Batch: " + m.batch));
+    const del = el("button", "Delete", "sm del");
+    del.type = "button";
+    del.addEventListener("click", async function () {
+      if (!confirm("Delete this file?")) return;
+      say("Deleting...");
+      await sb.storage.from("materials").remove([m.file_path]);
+      const res = await sb.from("materials").delete().eq("id", m.id);
+      say(res.error ? "Could not delete." : "Deleted.");
+      loadMaterials();
+    });
+    r.appendChild(del);
+    box.appendChild(r);
+  });
+}
+
+document.getElementById("upBtn").addEventListener("click", async function () {
+  const batch = document.getElementById("mbatch").value;
+  const title = document.getElementById("mtitle").value.trim();
+  const file = document.getElementById("mfile").files[0];
+  if (!title || !file) { say("Please enter a title and choose a PDF."); return; }
+  if (file.type !== "application/pdf") { say("Only PDF files are allowed."); return; }
+  const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
+  const path = batch + "/" + Date.now() + "-" + safe;
+  say("Uploading...");
+  const up = await sb.storage.from("materials").upload(path, file, { contentType: "application/pdf" });
+  if (up.error) { say("Upload failed: " + up.error.message); return; }
+  const ins = await sb.from("materials").insert({ batch: batch, title: title, file_path: path });
+  if (ins.error) { say("Saved the file but could not list it."); return; }
+  document.getElementById("mtitle").value = "";
+  document.getElementById("mfile").value = "";
+  say("Uploaded.");
+  loadMaterials();
+});
+
+document.querySelectorAll(".tabs button").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.querySelectorAll(".tabs button").forEach(function (x) { x.classList.remove("on"); });
+    document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("on"); });
+    b.classList.add("on");
+    document.getElementById(b.dataset.t).classList.add("on");
+    say("");
+  });
+});
+
+document.getElementById("logoutLink").addEventListener("click", async function (e) {
+  e.preventDefault();
+  await sb.auth.signOut();
+  window.location.href = "login.html";
+});
+
+async function start() {
+  const { data } = await sb.auth.getSession();
+  if (!data.session) { window.location.href = "login.html"; return; }
+  const me = await sb.from("profiles").select("role").eq("id", data.session.user.id).single();
+  if (!me.data || me.data.role !== "admin") {
+    document.getElementById("who").textContent = "Access denied. This page is for the admin only.";
+    document.querySelector(".tabs").style.display = "none";
+    document.querySelectorAll(".panel").forEach(function (p) { p.style.display = "none"; });
+    return;
+  }
+  document.getElementById("who").textContent = "Logged in as " + data.session.user.email;
+  document.getElementById("mbatch").replaceWith(Object.assign(batchSelect("Class 10", false), { id: "mbatch" }));
+  loadEnquiries(); loadStudents(); loadMaterials();
+}
+start();
+</script>
+</body>
+</html>
