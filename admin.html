@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Admin | Sankalp Coaching Classes</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="contact.css">
+<style>
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:16px;background:var(--cream)}
+.tabs button{border:1px solid var(--olive);background:#fff;color:var(--violet);font-family:inherit;font-weight:600;font-size:14px;padding:9px 18px;border-radius:30px;cursor:pointer}
+.tabs button.on{background:var(--orange)}
+.panel{display:none;max-width:760px;margin:auto;padding:24px 16px 50px}
+.panel.on{display:block}
+.rowc{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(56,29,42,.1);border-left:5px solid var(--orange);font-size:14px;text-align:left}
+.rowc b{color:var(--violet)}
+.rowc small{display:block;color:#6b5b63;margin-top:4px}
+.rowc input,.rowc select{width:100%;padding:10px;margin-top:8px;border:1px solid var(--olive);border-radius:10px;font-family:inherit;font-size:15px;background:var(--light)}
+.sm{background:var(--orange);color:var(--violet);border:none;border-radius:20px;padding:8px 16px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px}
+.sm.del{background:#f3d3cf;color:#8a1c12}
+.note{font-size:13px;color:#5a4a52;margin-bottom:14px;text-align:left}
+#status{text-align:center;font-size:14px;padding:8px;color:var(--blue);font-weight:600}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">SANKALP ADMIN</div>
+  <nav>
+    <a href="index.html">Website</a>
+    <a class="login" href="#" id="logoutLink">Log Out</a>
+  </nav>
+</header>
+
+<section class="page-title">
+  <small>ADMIN DASHBOARD</small>
+  <h1>Manage <span>Sankalp</span></h1>
+  <p id="who">Checking access...</p>
+</section>
+
+<div class="tabs">
+  <button class="on" data-t="enq">Enquiries</button>
+  <button data-t="stu">Students</button>
+  <button data-t="mat">PDF Materials</button>
+</div>
+<div id="status">
