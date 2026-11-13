@@ -1,4 +1,4 @@
-.page-title{background:radial-gradient(circle at 85% 0%,rgba(243,155,109,.35),transparent 50%),linear-gradient(160deg,#381D2A,#3E6990);color:#fff;text-align:center;padding:48px 20px 56px}
+.page-title{background:radial-gradient(circle at 85% 0%,rgba(217,170,144,.3),transparent 50%),linear-gradient(160deg,#02000D,#07203F);color:#fff;text-align:center;padding:48px 20px 56px}
 .page-title small{display:inline-block;background:var(--olive);color:var(--violet);padding:4px 14px;border-radius:30px;font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:14px}
 .page-title h1{font-size:30px;margin-bottom:8px}
 .page-title h1 span{color:var(--orange)}
