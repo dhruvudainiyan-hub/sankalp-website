@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="pages.css">
 <link rel="stylesheet" href="contact.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -41,33 +42,29 @@
     <h2>Enquire Now</h2>
     <p class="sub">It takes less than a minute.</p>
 
-    <form name="enquiry" method="POST" action="/thanks" data-netlify="true" netlify-honeypot="bot-field">
-      <input type="hidden" name="form-name" value="enquiry">
-      <p class="hidden"><label>Do not fill this: <input name="bot-field"></label></p>
+    <label for="student">Student Name</label>
+    <input id="student" type="text">
 
-      <label for="student">Student Name</label>
-      <input id="student" type="text" name="student_name" required>
+    <label for="parent">Parent Name</label>
+    <input id="parent" type="text">
 
-      <label for="parent">Parent Name</label>
-      <input id="parent" type="text" name="parent_name" required>
+    <label for="phone">Phone Number</label>
+    <input id="phone" type="tel" maxlength="10" placeholder="10-digit mobile number">
 
-      <label for="phone">Phone Number</label>
-      <input id="phone" type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" required>
+    <label for="course">Course Interested In</label>
+    <select id="course">
+      <option value="">Select a course</option>
+      <option>Class 9th and 10th</option>
+      <option>Class 11th and 12th</option>
+      <option>JEE Main and Advanced</option>
+      <option>NEET</option>
+    </select>
 
-      <label for="course">Course Interested In</label>
-      <select id="course" name="course" required>
-        <option value="">Select a course</option>
-        <option>Class 9th and 10th</option>
-        <option>Class 11th and 12th</option>
-        <option>JEE Main and Advanced</option>
-        <option>NEET</option>
-      </select>
+    <label for="msg">Message (optional)</label>
+    <textarea id="msg"></textarea>
 
-      <label for="msg">Message (optional)</label>
-      <textarea id="msg" name="message"></textarea>
-
-      <button class="btn" type="submit">Submit Enquiry</button>
-    </form>
+    <p id="err" style="color:#b3261e;font-size:14px;margin-bottom:12px"></p>
+    <button class="btn" id="sendBtn" type="button">Submit Enquiry</button>
   </div>
 
 </section>
@@ -81,5 +78,38 @@
   example@gmail.com
 </footer>
 
+<script>
+const sb = supabase.createClient(
+  "https://srgffmgmutwfvxeiwffl.supabase.co",
+  "sb_publishable_UOI3Z3wQCNLFaLh0BDJHSw_mOCbK3Kw"
+);
+
+document.getElementById("sendBtn").addEventListener("click", async function () {
+  const err = document.getElementById("err");
+  const btn = this;
+  const student = document.getElementById("student").value.trim();
+  const parent = document.getElementById("parent").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const course = document.getElementById("course").value;
+  const message = document.getElementById("msg").value.trim();
+  err.textContent = "";
+
+  if (!student || !parent || !course) { err.textContent = "Please fill all required fields."; return; }
+  if (!/^[0-9]{10}$/.test(phone)) { err.textContent = "Please enter a valid 10-digit phone number."; return; }
+
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+  const { error } = await sb.from("enquiries").insert({
+    student_name: student, parent_name: parent, phone: phone, course: course, message: message
+  });
+  if (error) {
+    err.textContent = "Could not send. Please call us on 1234567890.";
+    btn.textContent = "Submit Enquiry";
+    btn.disabled = false;
+  } else {
+    window.location.href = "thanks.html";
+  }
+});
+</script>
 </body>
 </html>
