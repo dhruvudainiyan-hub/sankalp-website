@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Dashboard | Sankalp Coaching Classes</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+<link rel="stylesheet" href="contact.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">SANKALP COACHING CLASSES</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="courses.html">Courses</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a class="login" href="dashboard.html">Dashboard</a>
+  </nav>
+</header>
+
+<section class="page-title">
+  <small>STUDENT PORTAL</small>
+  <h1>Welcome, <span id="name">...</span></h1>
+  <p id="batchline">Loading your details...</p>
+</section>
+
+<section class="contact-wrap">
+  <div class="info">
+    <div><b>Your Batch</b><span id="batch">...</span></div>
+    <div><b>Email</b><span id="email">...</span></div>
+  </div>
+
+  <div class="formbox">
+    <h2>Study Materials</h2>
+    <p class="sub">Your batch PDFs will appear here soon.</p>
+    <button class="btn" id="logoutBtn" type="button">Log Out</button>
+  </div>
+</section>
+
+<footer>
+  <b>Sankalp Coaching Classes</b><br>
+  Jangjeet Nagar, Agra<br>
+  Phone: 1234567890
+</footer>
+
+<script>
+const sb = supabase.createClient(
+  "https://srgffmgmutwfvxeiwffl.supabase.co",
+  "sb_publishable_UOI3Z3wQCNLFaLh0BDJHSw_mOCbK3Kw"
+);
+
+async function load() {
+  const { data } = await sb.auth.getSession();
+  if (!data.session) { window.location.href = "login"; return; }
+  const user = data.session.user;
+  document.getElementById("email").textContent = user.email;
+
+  const res = await sb.from("profiles").select("full_name,batch").eq("id", user.id).single();
+  if (res.error || !res.data) {
+    document.getElementById("name").textContent = "Student";
+    document.getElementById("batchline").textContent = "Your profile is not set up yet. Please contact the institute.";
+    document.getElementById("batch").textContent = "Not assigned";
+    return;
+  }
+  document.getElementById("name").textContent = res.data.full_name || "Student";
+  document.getElementById("batch").textContent = res.data.batch || "Not assigned";
+  document.getElementById("batchline").textContent = "Batch: " + (res.data.batch || "Not assigned");
+}
+
+document.getElementById("logoutBtn").addEventListener("click", async function () {
+  await sb.auth.signOut();
+  window.location.href = "login";
+});
+
+load();
+</script>
+</body>
+</html>
